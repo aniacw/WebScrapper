@@ -18,46 +18,51 @@ public class LinkFinder {
     }
 
 
-//    private static final Pattern urlPattern =
+//        private static final Pattern urlPattern =
 //            Pattern.compile("<a href\\s*=\\s*\"(?:https://|http://)?([^\"]+)/?\"");
-private static final Pattern urlPattern =
-        Pattern.compile("<a href\\s*=\\s*\"([^\"]+)\"");
+    private static final Pattern urlPattern = Pattern.compile("<a href\\s*=\\s*\"([^\"]+)\"");
 
-    public LinkFinder(){
-        links=new HashSet<>();
+
+    //"\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))"
+    ///<a href\\s*=\\s*\"([^\"]+)\"
+    public LinkFinder() {
+        links = new HashSet<>();
         queuedLinks = new LinkedList<>();
         linksLimit = 10;
     }
 
-    public void search(String text){
+    public void search(String text) {
         Matcher matcher = urlPattern.matcher(text);
-        while (matcher.find()){
+        while (matcher.find()) {
             if (links.size() >= linksLimit)
                 break;
             String url = matcher.group(1);
-            if (links.add(url)){
+            if (links.add(url)) {
                 queuedLinks.add(url);
             }
+//            links.add(url);
+//            queuedLinks.add(url);
+//            System.out.println(url);
         }
     }
 
-    public String foundLinks(){
-        StringBuilder builder=new StringBuilder();
+    public String foundLinks() {
+        StringBuilder builder = new StringBuilder();
         for (String s : links)
             builder.append(s).append('\n');
         return builder.toString();
     }
 
-    public void add(String url){
+    public void add(String url) {
         if (links.add(url))
             queuedLinks.add(url);
     }
 
-    public String next(){
+    public String next() {
         return queuedLinks.poll();
     }
 
-    public void clear(){
+    public void clear() {
         links.clear();
         queuedLinks.clear();
     }
